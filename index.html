@@ -6,11 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       height: 100vh;
@@ -30,8 +26,7 @@
     .overlay {
       position: absolute;
       top: 0; left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.35);
       backdrop-filter: blur(3px);
       z-index: 1;
@@ -173,9 +168,7 @@
       font-weight: 500;
     }
 
-    audio {
-      display: none;
-    }
+    audio { display: none; }
 
     @keyframes gradientMove {
       0% { background-position: 0% 50%; }
@@ -202,8 +195,8 @@
   <div class="clock" id="clock">--:--:--</div>
 
   <div class="content">
-    <h1>Selamat pagi, Dinaa.</h1>
-    <p>Semangat, dan jangan lupa senyum.</p>
+    <h1></h1>
+    <p></p>
     
     <div class="images">
       <img src="WhatsApp Image 2025-08-08 at 04.19.58_1cc1ff2b.jpg" alt="Foto 1">
@@ -232,6 +225,7 @@
     let isPlaying = false;
 
     function formatTime(time) {
+      if (!isFinite(time)) return "00:00";
       const minutes = Math.floor(time / 60);
       const seconds = Math.floor(time % 60).toString().padStart(2, '0');
       return `${minutes}:${seconds}`;
@@ -251,9 +245,11 @@
     });
 
     audio.addEventListener("timeupdate", () => {
-      const percentage = (audio.currentTime / audio.duration) * 100;
-      progress.style.width = percentage + "%";
-      timer.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+      if (audio.duration) {
+        const percentage = (audio.currentTime / audio.duration) * 100;
+        progress.style.width = percentage + "%";
+        timer.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+      }
     });
 
     audio.addEventListener("loadedmetadata", () => {
@@ -268,6 +264,7 @@
       timer.textContent = `00:00 / ${formatTime(audio.duration)}`;
     });
 
+    // Try autoplay once on user interaction (some browsers block autoplay)
     document.body.addEventListener('click', () => {
       if (!isPlaying) {
         audio.play().then(() => {
@@ -278,6 +275,7 @@
       }
     }, { once: true });
 
+    // Clock
     function updateClock() {
       const now = new Date();
       const h = String(now.getHours()).padStart(2, '0');
@@ -285,9 +283,48 @@
       const s = String(now.getSeconds()).padStart(2, '0');
       document.getElementById("clock").textContent = `${h}:${m}:${s}`;
     }
-
     setInterval(updateClock, 1000);
     updateClock();
+
+    // Greeting + message update
+    function updateGreeting() {
+      const now = new Date();
+      const hour = now.getHours();
+      let greeting = "";
+      let message = "";
+
+      if (hour >= 5 && hour < 11) {
+        greeting = "Selamat pagi, Dinaa.";
+        message = "Awali harimu dengan senyum dan semangat baru!";
+      } else if (hour >= 11 && hour < 15) {
+        greeting = "Selamat siang, Dinaa.";
+        message = "Jangan lupa makan siang biar tetap bertenaga.";
+      } else if (hour >= 15 && hour < 18) {
+        greeting = "Selamat sore, Dinaa.";
+        message = "Nikmati sore ini dengan hati yang tenang.";
+      } else {
+        greeting = "Selamat malam, Dinaa.";
+        message = "Istirahat yang cukup, esok kita mulai lagi.";
+      }
+
+      const h1 = document.querySelector("h1");
+      const p  = document.querySelector("p");
+
+      // Update h1 with typing animation reset
+      h1.style.width = "0";
+      h1.textContent = greeting;
+      h1.style.animation = "none";
+      // Force reflow to restart animation
+      void h1.offsetWidth;
+      h1.style.animation = "typing 3s steps(30, end) 0.5s forwards, blink .75s step-end infinite";
+
+      // Update paragraph message (no typing)
+      p.textContent = message;
+    }
+
+    // Initialize and keep checking every minute
+    updateGreeting();
+    setInterval(updateGreeting, 60000);
   </script>
 </body>
 </html>
