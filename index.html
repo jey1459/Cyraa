@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Pagi, Dinaa</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      width: 100%;
+      background: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?auto=format&fit=crop&w=1400&q=80') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Inter', sans-serif;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      text-align: center;
+      flex-direction: column;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(3px);
+      z-index: 1;
+    }
+
+    .clock {
+      font-size: 2em;
+      font-weight: bold;
+      color: #ffffffdd;
+      margin-bottom: 15px;
+      z-index: 2;
+      animation: glow 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 5px #fff, 0 0 10px #00ffe0; }
+      to { text-shadow: 0 0 10px #fff, 0 0 20px #00ffe0; }
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      animation: fadeIn 1.5s ease-out;
+      padding: 20px;
+    }
+
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+
+    @keyframes blink {
+      0%, 100% { border-color: transparent }
+      50% { border-color: white }
+    }
+
+    h1 {
+      font-size: 2.8em;
+      margin-bottom: 20px;
+      width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 3px solid white;
+      animation: typing 3s steps(30, end) 0.5s forwards, blink .75s step-end infinite;
+      text-shadow: 0 0 10px rgba(255,255,255,0.5);
+    }
+
+    p {
+      font-size: 1.5em;
+      color: #ccc;
+      margin-bottom: 30px;
+      text-shadow: 0 0 6px rgba(0,0,0,0.4);
+    }
+
+    .images {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+
+    .images img {
+      width: 160px;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .images img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(255,255,255,0.3);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .audio-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      z-index: 2;
+    }
+
+    .play-btn {
+      background: linear-gradient(90deg, #00ffe0, #007cf0);
+      color: #fff;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 50px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1em;
+      box-shadow: 0 0 12px rgba(0, 255, 200, 0.5);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .play-btn:hover {
+      box-shadow: 0 0 20px rgba(0, 255, 200, 0.8);
+      transform: scale(1.05);
+    }
+
+    .play-btn::before {
+      content: attr(data-icon);
+      font-size: 1.2em;
+    }
+
+    .progress-bar {
+      width: 320px;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+    }
+
+    .progress {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(270deg, #00fff0, #00ff73, #ffcc00, #ff0066);
+      background-size: 800% 800%;
+      animation: gradientMove 4s ease infinite;
+      transition: width 0.2s linear;
+      border-radius: 30px;
+    }
+
+    .timer {
+      color: #fff;
+      font-size: 1em;
+      font-weight: 500;
+    }
+
+    audio {
+      display: none;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.8em; }
+      p { font-size: 1.1em; }
+      .images img { width: 120px; height: 160px; }
+      .progress-bar { width: 200px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+
+  <div class="clock" id="clock">--:--:--</div>
+
+  <div class="content">
+    <h1>Selamat pagi, Dinaa.</h1>
+    <p>Semangat, dan jangan lupa senyum.</p>
+    
+    <div class="images">
+      <img src="WhatsApp Image 2025-08-08 at 04.19.58_1cc1ff2b.jpg" alt="Foto 1">
+      <img src="WhatsApp Image 2025-08-08 at 04.19.59_b73f777e.jpg" alt="Foto 2">
+    </div>
+
+    <div class="audio-controls">
+      <button id="playBtn" class="play-btn" data-icon="🎵">Play</button>
+      <div class="progress-bar">
+        <div id="progress" class="progress"></div>
+      </div>
+      <div class="timer" id="timer">00:00 / 00:00</div>
+    </div>
+  </div>
+
+  <audio id="bgAudio" loop>
+    <source src="Keisya Levronka - Jadi Kekasihku Saja (Official Music Video).mp3" type="audio/mp3">
+    Browser kamu tidak mendukung audio.
+  </audio>
+
+  <script>
+    const audio = document.getElementById("bgAudio");
+    const playBtn = document.getElementById("playBtn");
+    const progress = document.getElementById("progress");
+    const timer = document.getElementById("timer");
+    let isPlaying = false;
+
+    function formatTime(time) {
+      const minutes = Math.floor(time / 60);
+      const seconds = Math.floor(time % 60).toString().padStart(2, '0');
+      return `${minutes}:${seconds}`;
+    }
+
+    playBtn.addEventListener("click", () => {
+      if (isPlaying) {
+        audio.pause();
+        playBtn.textContent = "Play";
+        playBtn.setAttribute("data-icon", "🎵");
+      } else {
+        audio.play();
+        playBtn.textContent = "Pause";
+        playBtn.setAttribute("data-icon", "⏸️");
+      }
+      isPlaying = !isPlaying;
+    });
+
+    audio.addEventListener("timeupdate", () => {
+      const percentage = (audio.currentTime / audio.duration) * 100;
+      progress.style.width = percentage + "%";
+      timer.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+    });
+
+    audio.addEventListener("loadedmetadata", () => {
+      timer.textContent = `00:00 / ${formatTime(audio.duration)}`;
+    });
+
+    audio.addEventListener("ended", () => {
+      progress.style.width = "0%";
+      playBtn.textContent = "Play";
+      playBtn.setAttribute("data-icon", "🎵");
+      isPlaying = false;
+      timer.textContent = `00:00 / ${formatTime(audio.duration)}`;
+    });
+
+    document.body.addEventListener('click', () => {
+      if (!isPlaying) {
+        audio.play().then(() => {
+          isPlaying = true;
+          playBtn.textContent = "Pause";
+          playBtn.setAttribute("data-icon", "⏸️");
+        }).catch(err => console.log("Autoplay diblok: ", err));
+      }
+    }, { once: true });
+
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById("clock").textContent = `${h}:${m}:${s}`;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+</body>
+</html>
